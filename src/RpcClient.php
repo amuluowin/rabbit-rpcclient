@@ -10,6 +10,8 @@ namespace rabbit\rpcclient;
 
 
 use rabbit\contract\ResultInterface;
+use rabbit\core\ObjectFactory;
+use rabbit\parser\ParserInterface;
 use rabbit\pool\ConnectionInterface;
 use rabbit\pool\PoolInterface;
 use rabbit\rpcclient\pool\RpcPool;
@@ -27,18 +29,12 @@ class RpcClient
     private $pool;
 
     /**
-     * @var RpcParser
-     */
-    private $parser;
-
-    /**
      * RpcClient constructor.
      * @param RpcPool $pool
      */
-    public function __construct(RpcPool $pool, RpcParser $parser)
+    public function __construct(RpcPool $pool)
     {
         $this->pool = $pool;
-        $this->parser = $parser;
     }
 
     /**
@@ -50,9 +46,11 @@ class RpcClient
     {
         /**
          * @var Connection $client
+         * @var ParserInterface $parser
          */
         $client = $this->pool->getConnection();
-        $arguments = $this->parser->encode(array_shift($arguments));
+        $parser = ObjectFactory::get('rpc.parser');
+        $arguments = $parser->encode(array_shift($arguments));
         $result = $client->send($arguments);
 
         return $this->getResult($client, $result);

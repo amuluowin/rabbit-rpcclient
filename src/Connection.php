@@ -33,8 +33,8 @@ class Connection extends AbstracetSocketConnection
 
         $address = $this->pool->getConnectionAddress();
         $timeout = $this->pool->getTimeout();
-//        $setting = $this->getTcpClientSetting();
-//        $setting && $client->set($setting);
+        $setting = $this->getTcpClientSetting();
+        $setting && $client->set($setting);
 
         list($host, $port) = explode(':', $address);
         if (!$client->connect($host, $port, $timeout)) {
@@ -77,7 +77,7 @@ class Connection extends AbstracetSocketConnection
      */
     public function getTcpClientSetting(): array
     {
-        return ObjectFactory::get('rpc.setting', []);
+        return ObjectFactory::get('rpcclient.setting', []);
     }
 
     /**

@@ -9,6 +9,8 @@
 namespace rabbit\rpcclient;
 
 
+use rabbit\core\ObjectFactory;
+use rabbit\parser\ParserInterface;
 use rabbit\pool\AbstractResult;
 
 class RpcResult extends AbstractResult
@@ -19,7 +21,11 @@ class RpcResult extends AbstractResult
      */
     public function getResult(...$params)
     {
-        return $this->recv(true);
+        /**
+         * @var ParserInterface $parser
+         */
+        $parser = ObjectFactory::get('rpc.parser');
+        return $parser->decode($this->recv(true));
     }
 
 }

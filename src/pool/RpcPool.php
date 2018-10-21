@@ -37,6 +37,9 @@ class RpcPool extends ConnectionPool
         return current($serviceList);
     }
 
+    /**
+     * @return array
+     */
     protected function getServiceList()
     {
         $name = $this->poolConfig->getName();
