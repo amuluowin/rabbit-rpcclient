@@ -1,0 +1,22 @@
+{
+  "name": "rabbit/rpcclient",
+  "description": "rabbit rpc client",
+  "type": "library",
+  "require": {
+    "rabbit/framework": "dev-master",
+    "rabbit/parser": "dev-master",
+    "rabbit/pool": "dev-master"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "albert",
+      "email": "63851587@qq.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "rabbit\\rpcclient\\": "src/"
+    }
+  }
+}
