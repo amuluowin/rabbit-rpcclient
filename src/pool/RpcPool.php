@@ -11,6 +11,7 @@ namespace rabbit\rpcclient\pool;
 
 use rabbit\pool\ConnectionInterface;
 use rabbit\pool\ConnectionPool;
+use rabbit\rpcclient\Connection;
 use rabbit\rpcclient\RpcClient;
 
 /**
@@ -24,7 +25,7 @@ class RpcPool extends ConnectionPool
      */
     public function createConnection(): ConnectionInterface
     {
-        return new RpcClient($this);
+        return new Connection($this);
     }
 
     /**
