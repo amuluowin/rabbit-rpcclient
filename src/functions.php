@@ -11,10 +11,9 @@ if (!function_exists('getServices')) {
      * @return array
      * @throws Exception
      */
-    function getServices()
+    function getServices(): array
     {
         $dir = \rabbit\App::getAlias('@services', false);
-        $services = [];
         try {
             $files = array();
             $queue = array($dir);
@@ -37,7 +36,49 @@ if (!function_exists('getServices')) {
                         }
                     }
                 }
-                closedir($handle);
+                if ($handle) {
+                    closedir($handle);
+                }
+            }
+            return $files;
+        } catch (\Exception $exc) {
+            throw $exc;
+        }
+    }
+}
+
+if (!function_exists('getApis')) {
+    /**
+     * @return array
+     * @throws Exception
+     */
+    function getApis(): array
+    {
+        $dir = \rabbit\App::getAlias('@apis', false);
+        try {
+            $files = array();
+            $queue = array($dir);
+            while ($data = each($queue)) {
+                $path = $data['value'];
+                if (is_dir($path) && $handle = opendir($path)) {
+                    while ($file = readdir($handle)) {
+                        if ($file == '.' || $file == '..') {
+                            continue;
+                        }
+                        $real_path = $path . '/' . $file;
+                        if (is_dir($real_path)) {
+                            $queue[] = $real_path;
+                        } elseif (strpos($real_path, 'Controller') !== false) {
+                            $namespace = str_replace([$dir, '.php'], ['', ''], $real_path);
+                            $route = strtolower(str_replace(['/controllers', 'Controller'], ['', ''], $namespace));
+                            $namespace = 'apis' . str_replace('/', '\\', $namespace);
+                            $files[$route] = $namespace;
+                        }
+                    }
+                }
+                if ($handle) {
+                    closedir($handle);
+                }
             }
             return $files;
         } catch (\Exception $exc) {

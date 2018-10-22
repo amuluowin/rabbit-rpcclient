@@ -12,6 +12,7 @@ namespace rabbit\rpcclient;
 use rabbit\contract\ResultInterface;
 use rabbit\core\Context;
 use rabbit\core\ObjectFactory;
+use rabbit\helper\ArrayHelper;
 use rabbit\parser\ParserInterface;
 use rabbit\pool\ConnectionInterface;
 use rabbit\pool\PoolInterface;
@@ -41,7 +42,7 @@ class RpcClient
     public function __construct(RpcPool $pool)
     {
         $this->pool = $pool;
-        $this->services = getServices();
+//        $this->services = ArrayHelper::merge(getServices(), getApis());
     }
 
     /**
@@ -64,7 +65,7 @@ class RpcClient
     {
         $service = Context::get('rpc.service');
         $service = isset($this->services[$service]) ? $this->services[$service] : $service;
-        if (($ser = ObjectFactory::get($service)) !== null) {
+        if (($ser = ObjectFactory::get($service, null, false)) !== null) {
             return new NavResult($ser->$name(...$arguments));
         }
         /**
@@ -73,10 +74,20 @@ class RpcClient
          */
         $client = $this->pool->getConnection();
         $parser = ObjectFactory::get('rpc.parser');
-        $arguments = $parser->encode(array_shift($arguments));
-        $result = $client->send($arguments);
+        $data = [
+            'service' => $service,
+            'method' => $name,
+            'params' => $arguments,
+            'traceId' => 0,
+            'spanId' => 0,
+            'host' => current(swoole_get_local_ip()),
+            'port' => 80,
+            'time' => time()
+        ];
+        $data = $parser->encode($data);
+        $result = $client->send($data);
 
-        return new TcpResult($connection, $result);
+        return new TcpResult($client, $result);
 
     }
 }
