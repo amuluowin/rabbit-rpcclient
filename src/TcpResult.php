@@ -13,7 +13,7 @@ use rabbit\core\ObjectFactory;
 use rabbit\parser\ParserInterface;
 use rabbit\pool\AbstractResult;
 
-class RpcResult extends AbstractResult
+class TcpResult extends AbstractResult
 {
     /**
      * @param mixed ...$params

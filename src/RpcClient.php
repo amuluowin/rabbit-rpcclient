@@ -10,6 +10,7 @@ namespace rabbit\rpcclient;
 
 
 use rabbit\contract\ResultInterface;
+use rabbit\core\Context;
 use rabbit\core\ObjectFactory;
 use rabbit\parser\ParserInterface;
 use rabbit\pool\ConnectionInterface;
@@ -38,12 +39,27 @@ class RpcClient
     }
 
     /**
+     * @param string $service
+     * @return RpcClient
+     */
+    public function create(string $service): RpcClient
+    {
+        Context::set('rpc.service', $service);
+        return $this;
+    }
+
+    /**
      * @param $name
      * @param $arguments
      * @return ResultInterface
+     * @throws \Exception
      */
     public function __call($name, $arguments): ResultInterface
     {
+        $service = Context::get('rpc.service');
+        if (($ser = ObjectFactory::get($service)) !== null) {
+            return new NavResult($ser->$name(...$arguments));
+        }
         /**
          * @var Connection $client
          * @var ParserInterface $parser
@@ -53,16 +69,7 @@ class RpcClient
         $arguments = $parser->encode(array_shift($arguments));
         $result = $client->send($arguments);
 
-        return $this->getResult($client, $result);
-    }
+        return new TcpResult($connection, $result);
 
-    /**
-     * @param ConnectionInterface $connection
-     * @param $result
-     * @return ResultInterface
-     */
-    private function getResult(ConnectionInterface $connection, $result): ResultInterface
-    {
-        return new RpcResult($connection, $result);
     }
 }
