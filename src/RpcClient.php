@@ -30,12 +30,18 @@ class RpcClient
     private $pool;
 
     /**
+     * @var array
+     */
+    private $services = [];
+
+    /**
      * RpcClient constructor.
      * @param RpcPool $pool
      */
     public function __construct(RpcPool $pool)
     {
         $this->pool = $pool;
+        $this->services = getServices();
     }
 
     /**
@@ -57,6 +63,7 @@ class RpcClient
     public function __call($name, $arguments): ResultInterface
     {
         $service = Context::get('rpc.service');
+        $service = isset($this->services[$service]) ? $this->services[$service] : $service;
         if (($ser = ObjectFactory::get($service)) !== null) {
             return new NavResult($ser->$name(...$arguments));
         }
