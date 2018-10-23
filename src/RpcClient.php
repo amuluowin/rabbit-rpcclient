@@ -72,9 +72,7 @@ class RpcClient
             'params' => $arguments,
             'traceId' => 0,
             'spanId' => 0,
-            'host' => current(swoole_get_local_ip()),
-            'port' => 80,
-            'time' => time()
+
         ];
         $data = $parser->encode($data);
         $result = $client->send($data);
