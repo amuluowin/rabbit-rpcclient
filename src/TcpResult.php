@@ -25,7 +25,7 @@ class TcpResult extends AbstractResult
          * @var ParserInterface $parser
          */
         $parser = ObjectFactory::get('rpc.parser');
-        return $parser->decode($this->recv(true));
+        return $parser->decode($this->recv(true))['data'];
     }
 
 }

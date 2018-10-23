@@ -12,10 +12,10 @@ namespace rabbit\rpcclient;
 use rabbit\contract\ResultInterface;
 use rabbit\core\Context;
 use rabbit\core\ObjectFactory;
-use rabbit\parser\ParserInterface;
 use rabbit\pool\PoolInterface;
 use rabbit\rpcclient\pool\RpcPool;
 use rabbit\rpcserver\RpcParser;
+use rabbit\socket\TcpParserInterface;
 
 /**
  * Class RpcClient
@@ -57,13 +57,12 @@ class RpcClient
     {
         $service = Context::get('rpc.service');
         $serviceList = ObjectFactory::get('rpc.services');
-        $service = isset($serviceList[$service]) ? $serviceList[$service] : $service;
-        if (($ser = ObjectFactory::get($service, null, false)) !== null) {
-            return new NavResult($ser->$name(...$arguments));
+        if (isset($serviceList[$service])) {
+            return new NavResult(ObjectFactory::get($serviceList[$service])->$name(...$arguments));
         }
         /**
          * @var Connection $client
-         * @var ParserInterface $parser
+         * @var TcpParserInterface $parser
          */
         $client = $this->pool->getConnection();
         $parser = ObjectFactory::get('rpc.parser');
