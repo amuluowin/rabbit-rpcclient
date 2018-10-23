@@ -12,9 +12,7 @@ namespace rabbit\rpcclient;
 use rabbit\contract\ResultInterface;
 use rabbit\core\Context;
 use rabbit\core\ObjectFactory;
-use rabbit\helper\ArrayHelper;
 use rabbit\parser\ParserInterface;
-use rabbit\pool\ConnectionInterface;
 use rabbit\pool\PoolInterface;
 use rabbit\rpcclient\pool\RpcPool;
 use rabbit\rpcserver\RpcParser;
@@ -31,18 +29,12 @@ class RpcClient
     private $pool;
 
     /**
-     * @var array
-     */
-    private $services = [];
-
-    /**
      * RpcClient constructor.
      * @param RpcPool $pool
      */
     public function __construct(RpcPool $pool)
     {
         $this->pool = $pool;
-//        $this->services = ArrayHelper::merge(getServices(), getApis());
     }
 
     /**
@@ -64,7 +56,8 @@ class RpcClient
     public function __call($name, $arguments): ResultInterface
     {
         $service = Context::get('rpc.service');
-        $service = isset($this->services[$service]) ? $this->services[$service] : $service;
+        $serviceList = ObjectFactory::get('rpc.services');
+        $service = isset($serviceList[$service]) ? $serviceList[$service] : $service;
         if (($ser = ObjectFactory::get($service, null, false)) !== null) {
             return new NavResult($ser->$name(...$arguments));
         }
