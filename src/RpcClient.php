@@ -12,10 +12,13 @@ namespace rabbit\rpcclient;
 use rabbit\contract\ResultInterface;
 use rabbit\core\Context;
 use rabbit\core\ObjectFactory;
+use rabbit\governance\trace\TraceInterface;
 use rabbit\pool\PoolInterface;
 use rabbit\rpcclient\parser\TcpParserInterface;
 use rabbit\rpcclient\pool\RpcPool;
+use rabbit\rpcserver\Request;
 use rabbit\rpcserver\RpcParser;
+use rabbit\server\AttributeEnum;
 
 /**
  * Class RpcClient
@@ -29,12 +32,18 @@ class RpcClient
     private $pool;
 
     /**
+     * @var TraceInterface
+     */
+    private $tracer;
+
+    /**
      * RpcClient constructor.
      * @param RpcPool $pool
      */
     public function __construct(RpcPool $pool)
     {
         $this->pool = $pool;
+        $this->tracer = ObjectFactory::get('tracer');
     }
 
     /**
@@ -69,15 +78,19 @@ class RpcClient
         $data = [
             'service' => $service,
             'method' => $name,
-            'params' => $arguments,
-            'traceId' => 0,
-            'spanId' => 0,
-
+            'params' => $arguments
         ];
-        $data = $parser->encode($data);
+
+        /**
+         * @var Request $request
+         */
+        $request = Context::get('request');
+        $traceData = $request->getAttribute(AttributeEnum::TRACE_ATTRIBUTE);
+        $traceData = $this->tracer->getCollect($data, $traceData ? $traceData['traceId'] : null);
+        $data = $parser->encode($traceData);
         $result = $client->send($data);
 
-        return new TcpResult($client, $result);
+        return new TcpResult($client, $traceData['traceId']);
 
     }
 }
