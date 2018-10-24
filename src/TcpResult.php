@@ -10,12 +10,10 @@ namespace rabbit\rpcclient;
 
 
 use Psr\Http\Message\RequestInterface;
-use rabbit\core\Context;
 use rabbit\core\ObjectFactory;
 use rabbit\governance\trace\TraceInterface;
 use rabbit\parser\ParserInterface;
 use rabbit\pool\AbstractResult;
-use rabbit\server\AttributeEnum;
 
 class TcpResult extends AbstractResult
 {

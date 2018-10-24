@@ -17,7 +17,6 @@ use rabbit\governance\trace\TraceInterface;
 use rabbit\pool\PoolInterface;
 use rabbit\rpcclient\parser\TcpParserInterface;
 use rabbit\rpcclient\pool\RpcPool;
-use rabbit\rpcserver\Request;
 use rabbit\rpcserver\RpcParser;
 use rabbit\server\AttributeEnum;
 
