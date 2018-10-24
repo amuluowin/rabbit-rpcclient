@@ -24,6 +24,6 @@ class Tcp extends TcpClient
      */
     protected function getTcpClientSetting(): array
     {
-        return ObjectFactory::get('rpcclient.setting', []);
+        return ObjectFactory::get('rpcclient.setting', false, []);
     }
 }
