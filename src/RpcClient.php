@@ -9,7 +9,6 @@
 namespace rabbit\rpcclient;
 
 
-use Psr\Http\Message\ServerRequestInterface;
 use rabbit\contract\ResultInterface;
 use rabbit\core\Context;
 use rabbit\core\ObjectFactory;
@@ -18,7 +17,6 @@ use rabbit\pool\PoolInterface;
 use rabbit\rpcclient\parser\TcpParserInterface;
 use rabbit\rpcclient\pool\RpcPool;
 use rabbit\rpcserver\RpcParser;
-use rabbit\server\AttributeEnum;
 
 /**
  * Class RpcClient
@@ -80,17 +78,11 @@ class RpcClient
             'method' => $name,
             'params' => $arguments
         ];
-
-        /**
-         * @var ServerRequestInterface $request
-         */
-        $request = Context::get('request');
-        $traceData = $request->getAttribute(AttributeEnum::TRACE_ATTRIBUTE);
-        $traceData = $this->tracer->getCollect($data, $traceData ? $traceData['traceId'] : null);
-        $data = $parser->encode($traceData);
+        $data = $this->tracer->getCollect($data);
+        $data = $parser->encode($data);
         $result = $client->send($data);
 
-        return new TcpResult($client, $traceData['traceId']);
+        return new TcpResult($client, $result);
 
     }
 }

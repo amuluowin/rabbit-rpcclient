@@ -36,8 +36,8 @@ class TcpResult extends AbstractResult
          * @var RequestInterface $request
          */
         $tracer = ObjectFactory::get('tracer');
-        $tracer->addCollect($this->result, $data);
-        $tracer->flushCollect($this->result);
+        $tracer->addCollect($data);
+        $tracer->flushCollect();
         return $result;
     }
 
