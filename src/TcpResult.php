@@ -23,11 +23,12 @@ class TcpResult extends AbstractResult
      */
     public function getResult(...$params)
     {
+        $timeout = array_shift($params);
         /**
          * @var ParserInterface $parser
          */
         $parser = ObjectFactory::get('rpc.parser');
-        $result = $parser->decode($this->recv(true))['data'];
+        $result = $parser->decode($this->recv(true, $timeout))['data'];
 
         $data = [];
         $data['result'] = $result;
