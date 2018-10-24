@@ -9,6 +9,7 @@
 namespace rabbit\rpcclient;
 
 
+use Psr\Http\Message\ServerRequestInterface;
 use rabbit\contract\ResultInterface;
 use rabbit\core\Context;
 use rabbit\core\ObjectFactory;
@@ -82,7 +83,7 @@ class RpcClient
         ];
 
         /**
-         * @var Request $request
+         * @var ServerRequestInterface $request
          */
         $request = Context::get('request');
         $traceData = $request->getAttribute(AttributeEnum::TRACE_ATTRIBUTE);
