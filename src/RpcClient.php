@@ -14,9 +14,9 @@ use rabbit\core\Context;
 use rabbit\core\ObjectFactory;
 use rabbit\governance\trace\TraceInterface;
 use rabbit\pool\PoolInterface;
-use rabbit\rpcclient\parser\TcpParserInterface;
 use rabbit\rpcclient\pool\RpcPool;
 use rabbit\rpcserver\RpcParser;
+use rabbit\socket\TcpParserInterface;
 
 /**
  * Class RpcClient
