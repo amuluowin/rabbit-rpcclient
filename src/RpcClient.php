@@ -30,6 +30,11 @@ class RpcClient
     private $pool;
 
     /**
+     * @var PoolInterface[]
+     */
+    private $pools = [];
+
+    /**
      * @var TraceInterface
      */
     private $tracer;
@@ -71,7 +76,11 @@ class RpcClient
          * @var Connection $client
          * @var TcpParserInterface $parser
          */
-        $client = $this->pool->getConnection();
+        if (!isset($this->pools[$service])) {
+            $this->pools[$service] = clone $this->pool;
+            $this->pools[$service]->setName($service);
+        }
+        $client = $this->pools[$service]->getConnection();
         $parser = ObjectFactory::get('rpc.parser');
         $data = [
             'service' => $service,

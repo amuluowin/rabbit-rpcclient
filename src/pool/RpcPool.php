@@ -9,6 +9,8 @@
 namespace rabbit\rpcclient\pool;
 
 
+use rabbit\governance\balancer\BalancerInterface;
+use rabbit\governance\provider\ProviderInterface;
 use rabbit\pool\ConnectionInterface;
 use rabbit\pool\ConnectionPool;
 use rabbit\rpcclient\Tcp;
@@ -19,6 +21,9 @@ use rabbit\rpcclient\Tcp;
  */
 class RpcPool extends ConnectionPool
 {
+    /** @var RpcPoolConfig */
+    protected $poolConfig;
+
     /**
      * @return ConnectionInterface
      */
@@ -33,6 +38,10 @@ class RpcPool extends ConnectionPool
     public function getConnectionAddress(): string
     {
         $serviceList = $this->getServiceList();
+        /** @var BalancerInterface $balancer */
+        if (($balancer = $this->poolConfig->getBalancer()) !== null) {
+            return $balancer->getCurrentService($serviceList);
+        }
         return current($serviceList);
     }
 
@@ -41,13 +50,10 @@ class RpcPool extends ConnectionPool
      */
     protected function getServiceList()
     {
-        $name = $this->poolConfig->getName();
-        $uri = $this->poolConfig->getUri();
-        if (empty($uri)) {
-            $error = sprintf('Service does not configure uri name=%s', $name);
-            throw new \InvalidArgumentException($error);
+        if (($provider = $this->poolConfig->getProvider()) === null) {
+            throw new \InvalidArgumentException('please set service provider!');
         }
-
-        return $uri;
+        /** @var ProviderInterface $provider */
+        return $provider->getServices($this->poolConfig->getName());
     }
 }
