@@ -78,7 +78,7 @@ class RpcClient
          */
         if (!isset($this->pools[$service])) {
             $this->pools[$service] = clone $this->pool;
-            $this->pools[$service]->setName($service);
+            $this->pools[$service]->getPoolConfig()->setName($service);
         }
         $client = $this->pools[$service]->getConnection();
         $parser = ObjectFactory::get('rpc.parser');
