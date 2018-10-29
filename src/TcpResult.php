@@ -31,6 +31,7 @@ class TcpResult extends AbstractResult
         $result = $parser->decode($this->recv(true, $timeout))['data'];
 
         $data = [];
+        $data['recvTime'] = floor(microtime(true) * 1000);
         $data['result'] = $result;
         /**
          * @var TraceInterface $tracer
