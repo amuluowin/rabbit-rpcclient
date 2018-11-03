@@ -68,10 +68,10 @@ class RpcClient
     public function __call($name, $arguments): ResultInterface
     {
         $service = Context::get('rpc.service');
-        $serviceList = ObjectFactory::get('rpc.services');
-        if (isset($serviceList[$service])) {
-            return new NavResult(ObjectFactory::get($serviceList[$service])->$name(...$arguments));
-        }
+//        $serviceList = ObjectFactory::get('rpc.services');
+//        if (isset($serviceList[$service])) {
+//            return new NavResult(ObjectFactory::get($serviceList[$service])->$name(...$arguments));
+//        }
         /**
          * @var Connection $client
          * @var TcpParserInterface $parser
