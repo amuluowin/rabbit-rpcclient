@@ -91,7 +91,7 @@ class RpcClient
         $data = $parser->encode($data);
         $result = $client->send($data);
 
-        return new TcpResult($client, $result);
+        return new TcpResult($client, $result, $parser);
 
     }
 }
