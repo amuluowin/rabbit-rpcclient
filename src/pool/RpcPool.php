@@ -11,27 +11,15 @@ namespace rabbit\rpcclient\pool;
 
 use rabbit\governance\balancer\BalancerInterface;
 use rabbit\governance\provider\ProviderInterface;
-use rabbit\pool\ConnectionInterface;
-use rabbit\pool\ConnectionPool;
 use rabbit\rpcclient\Tcp;
+use rabbit\socket\pool\SocketPool;
 
 /**
  * Class RpcPool
  * @package rabbit\rpcclient\pool
  */
-class RpcPool extends ConnectionPool
+class RpcPool extends SocketPool
 {
-    /** @var RpcPoolConfig */
-    protected $poolConfig;
-
-    /**
-     * @return ConnectionInterface
-     */
-    public function createConnection(): ConnectionInterface
-    {
-        return new Tcp($this);
-    }
-
     /**
      * @return string
      */

@@ -11,13 +11,13 @@ namespace rabbit\rpcclient\pool;
 
 use rabbit\governance\balancer\BalancerInterface;
 use rabbit\governance\provider\ProviderInterface;
-use rabbit\pool\PoolProperties;
+use rabbit\socket\pool\SocketConfig;
 
 /**
  * Class RpcPoolConfig
  * @package rabbit\rpcclient\pool
  */
-class RpcPoolConfig extends PoolProperties
+class RpcPoolConfig extends SocketConfig
 {
     /** @var BalancerInterface */
     private $balancer;

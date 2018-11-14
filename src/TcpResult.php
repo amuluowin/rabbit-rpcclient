@@ -12,7 +12,6 @@ namespace rabbit\rpcclient;
 use Psr\Http\Message\RequestInterface;
 use rabbit\core\ObjectFactory;
 use rabbit\governance\trace\TraceInterface;
-use rabbit\parser\ParserInterface;
 use rabbit\pool\AbstractResult;
 
 class TcpResult extends AbstractResult
