@@ -12,7 +12,7 @@ namespace rabbit\rpcclient\parser;
 use rabbit\core\ObjectFactory;
 use rabbit\helper\JsonHelper;
 use rabbit\parser\ParserInterface;
-use rabbit\socket\TcpParserInterface;
+use rabbit\socket\tcp\TcpParserInterface;
 
 /**
  * Class TcpEofParser
