@@ -24,7 +24,7 @@ class TcpResult extends AbstractResult
     {
         $timeout = array_shift($params);
 
-        $result = $this->parser->decode($this->recv(true, $timeout))['data'];
+        $result = $this->parser->decode($this->recv(true, $timeout ?? -1))['data'];
 
         $data = [];
         $data['recvTime'] = floor(microtime(true) * 1000);
